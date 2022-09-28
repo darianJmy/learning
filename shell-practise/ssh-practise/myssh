@@ -1,0 +1,42 @@
+#!/bin/bash
+
+set -eo pipefail
+
+hostname=${1}
+Hosts=
+
+User=
+Ip=
+Pswd=
+Port=
+
+function Myssh {
+    if [[ ! $hostname ]]; then
+        hosts=$(cat ./hosts | awk -F ' ' '{print$1}')
+        Hosts=$hosts
+        EchoHosts
+    else
+        hosts=$(cat ./hosts | grep $hostname)
+
+        User=`echo $hosts | awk '{print $2}'`
+        Ip=`echo $hosts   | awk '{print $3}'`
+        Pswd=`echo $hosts | awk '{print $4}'`
+        Port=`echo $hosts | awk '{print $5}'`
+
+        SshHost
+
+    fi
+}
+
+function EchoHosts {
+echo -e "\033[35m当前可连接主机:\n${Hosts}\033[0m
+\033[36m连接远程主机:
+myssh [主机名]\033[0m"
+}
+
+function SshHost {
+echo -e "\033[35m连接主机:${Ip}\033[0m"
+mmssh $User $Ip $Pswd $Port
+}
+
+Myssh

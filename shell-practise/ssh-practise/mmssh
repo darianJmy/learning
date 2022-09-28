@@ -1,0 +1,18 @@
+#!/usr/bin/expect
+
+set timeout 30
+set User [lindex $argv 0]
+set Ip   [lindex $argv 1]
+set Pswd [lindex $argv 2]
+set Port [lindex $argv 3]
+
+
+spawn ssh -p $Port $User@$Ip
+expect {
+        "(yes/no)?"
+        {send "yes\n";exp_continue;}
+       -re "(p|P)ass(word|wd):"
+        {send "$Pswd\n"}
+}
+
+interact
