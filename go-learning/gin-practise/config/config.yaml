@@ -1,0 +1,11 @@
+default:
+  # 服务监听端口
+  listen: 8083
+
+# 数据库地址信息
+mysql:
+  host: 10.249.4.147
+  user: root
+  password: root
+  port: 3306
+  database: gorm
