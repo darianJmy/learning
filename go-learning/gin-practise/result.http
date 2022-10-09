@@ -1,0 +1,37 @@
+@BASE_URL = http://127.0.0.1:8083
+
+###
+GET {{BASE_URL}}/user/jixingxing
+
+###
+GET {{BASE_URL}}/user/list
+
+###
+DELETE {{BASE_URL}}/user/jixingxing001
+
+###
+POST {{BASE_URL}}/user
+
+{
+    "username":"jixingxing",
+    "username_cn":"季星星",
+    "nickname":"星星",
+    "password":"123456",
+    "phone":"18511111111",
+    "email":"54@qq.com"
+}
+
+###
+PUT {{BASE_URL}}/user/jixingxing
+
+{
+    "username":"jixingxing001",
+    "username_cn":"季星星",
+    "nickname":"星星",
+    "password":"123456",
+    "phone":"18511111111",
+    "email":"54@qq.com"
+}
+
+###
+GET {{BASE_URL}}/login?username=jimingming&password=123
