@@ -1,6 +1,7 @@
 default:
   # 服务监听端口
   listen: 8083
+  log_dir: /Users/jimingyu_1/Desktop/learning/go-learning/gin-practise
 
 # 数据库地址信息
 mysql:

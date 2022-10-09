@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/darianJmy/learning/go-learning/gin-practise/cmd/config"
+	"github.com/darianJmy/learning/go-learning/gin-practise/pkg/log"
 	"github.com/darianJmy/learning/go-learning/gin-practise/pkg/types"
 )
 
@@ -65,8 +66,15 @@ func (o *Options) register() error {
 	if err := o.registerGinEngine(); err != nil {
 		return err
 	}
+	if err := o.registerLogClient(); err != nil {
+		return err
+	}
 
 	return nil
+}
+
+func (o *Options) registerLogClient() error {
+	return log.ConsoleLogger(o.ComponentConfig.Default.LogDir)
 }
 
 func (o *Options) registerDatabase() error {

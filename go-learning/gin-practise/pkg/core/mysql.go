@@ -1,7 +1,6 @@
 package core
 
 import (
-	"github.com/google/uuid"
 	"time"
 
 	"gorm.io/gorm"
@@ -33,7 +32,6 @@ func newMysql(c core) MysqlV1Interface {
 
 func (m *Mysql) CreateUser(user *types.User) error {
 	user.CreateTime = time.Now()
-	user.UerID = uuid.New().ID()
 
 	return m.DB.Create(&user).Error
 }
@@ -45,7 +43,7 @@ func (m *Mysql) DeleteUser(userName string) error {
 
 func (m *Mysql) GetUser(userName string) (*types.User, error) {
 	var user types.User
-	if err := m.DB.Where("username = ?", userName).First(&user).Error; err != nil {
+	if err := m.DB.Where("username = ?", userName).Find(&user).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil
