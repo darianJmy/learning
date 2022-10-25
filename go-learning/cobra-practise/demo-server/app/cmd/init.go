@@ -2,12 +2,13 @@ package cmd
 
 import (
 	"fmt"
-	phases "github.com/darianJmy/learning/go-learning/cobra-practise/demo-server/app/cmd/phases/init"
-	"github.com/darianJmy/learning/go-learning/cobra-practise/demo-server/app/cmd/phases/workflow"
-	"path/filepath"
 
 	"github.com/spf13/cobra"
 	flag "github.com/spf13/pflag"
+	"path/filepath"
+
+	phases "github.com/darianJmy/learning/go-learning/cobra-practise/demo-server/app/cmd/phases/init"
+	"github.com/darianJmy/learning/go-learning/cobra-practise/demo-server/app/cmd/phases/workflow"
 )
 
 type initOptions struct {

@@ -2,8 +2,10 @@ package phases
 
 import (
 	"fmt"
-	"github.com/darianJmy/learning/go-learning/cobra-practise/demo-server/app/cmd/phases/workflow"
+
 	"github.com/pkg/errors"
+
+	"github.com/darianJmy/learning/go-learning/cobra-practise/demo-server/app/cmd/phases/workflow"
 )
 
 func NewCertsPhase() workflow.Phase {
