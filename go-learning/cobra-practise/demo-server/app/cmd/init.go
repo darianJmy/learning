@@ -17,13 +17,14 @@ type initOptions struct {
 	externalInitCfg string
 }
 
-//var _ phases.InitData = &initData{}
+var _ phases.InitData = &initData{}
 
 type initData struct {
 	dryRun          bool
 	aliceConfigDir  string
 	aliceConfigPath string
 	externalInitCfg string
+	version         string
 }
 
 func newCmdInit(initOptions *initOptions) *cobra.Command {
@@ -36,20 +37,15 @@ func newCmdInit(initOptions *initOptions) *cobra.Command {
 		Use:   "init",
 		Short: "Run this command in order to set up the Alice control plane",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			fmt.Printf(initOptions.aliceConfigPath)
-			//c, err := initRunner.InitData(args)
-			//if err != nil {
-			//	return err
-			//}
-			//
-			//data := c.(*initData)
-			//fmt.Printf("[init] Using Alice version: %s\n", "1.0")
-			//
-			//if err = initRunner.Run(args); err != nil {
-			//	return err
-			//}
-			//return showJoinCommand(data)
-			return nil
+			c, err := initRunner.InitData(args)
+			if err != nil {
+				return err
+			}
+
+			data := c.(*initData)
+			fmt.Printf("[init] Using Alice version: %s\n", data.Version())
+
+			return initRunner.Run(args)
 		},
 		Args: cobra.NoArgs,
 	}
@@ -57,16 +53,20 @@ func newCmdInit(initOptions *initOptions) *cobra.Command {
 	AddInitConfigFlags(cmd.Flags(), initOptions)
 
 	initRunner.AppendPhase(phases.NewCertsPhase())
+	initRunner.AppendPhase(phases.NewStartPhase())
+
+	initRunner.SetDataInitializer(func(cmd *cobra.Command, args []string) (workflow.RunData, error) {
+		data := newInitData(cmd, args, initOptions)
+		return data, nil
+	})
+
+	initRunner.BindToCommand(cmd)
+
 	return cmd
 }
 
 func AddInitConfigFlags(flagSet *flag.FlagSet, initOptions *initOptions) {
 	flagSet.StringVar(&initOptions.externalInitCfg, "configFile", initOptions.externalInitCfg, "configFile Path")
-}
-
-func RunInit(initOptions *initOptions) error {
-	fmt.Printf("Hello world, %v", initOptions.externalInitCfg)
-	return nil
 }
 
 func newInitOptions() *initOptions {
@@ -78,4 +78,35 @@ func newInitOptions() *initOptions {
 
 func GetAdminAliceConfigPath() string {
 	return filepath.Join("/etc/alice", "admin.conf")
+}
+
+func newInitData(cmd *cobra.Command, args []string, options *initOptions) *initData {
+	return &initData{
+		dryRun:          true,
+		aliceConfigDir:  options.aliceConfigDir,
+		aliceConfigPath: options.aliceConfigPath,
+		externalInitCfg: options.externalInitCfg,
+		version:         "v1.0",
+	}
+
+}
+
+func (d *initData) DryRun() bool {
+	return d.dryRun
+}
+
+func (d *initData) ConfigDir() string {
+	return d.aliceConfigDir
+}
+
+func (d *initData) ConfigPath() string {
+	return d.aliceConfigPath
+}
+
+func (d *initData) ExternalInitCfg() string {
+	return d.externalInitCfg
+}
+
+func (d *initData) Version() string {
+	return d.version
 }
