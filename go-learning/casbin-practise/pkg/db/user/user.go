@@ -3,7 +3,6 @@ package user
 import (
 	"context"
 	"github.com/darianJmy/learning/go-learning/casbin-practise/pkg/db/model"
-	"github.com/darianJmy/learning/go-learning/gin-practise/pkg/types"
 	"gorm.io/gorm"
 	"time"
 )
@@ -37,13 +36,13 @@ func (u *user) Create(context context.Context, obj *model.User) (*model.User, er
 
 func (u *user) Delete(context context.Context, uid int64) error {
 	return u.db.
-		Where("user_id = ?", uid).
+		Where("id = ?", uid).
 		Delete(&model.User{}).Error
 }
 
 func (u *user) Get(context context.Context, uid int64) (*model.User, error) {
 	var obj model.User
-	if err := u.db.Where("user_id = ?", uid).Find(&obj).Error; err != nil {
+	if err := u.db.Where("id = ?", uid).Find(&obj).Error; err != nil {
 		return nil, err
 	}
 	return &obj, nil
@@ -58,15 +57,5 @@ func (u *user) List(ctx context.Context) (*[]model.User, error) {
 }
 
 func (u *user) Update(ctx context.Context, uid int64, user *model.User) error {
-	return u.db.Model(&types.User{}).Where("user_id = ?", uid).Updates(&user).Error
-}
-
-func CheckTables(db *gorm.DB) error {
-	if !db.Migrator().HasTable(&model.User{}) {
-		if err := db.Set("gorm:table_options", "ENGINE=InnoDB DEFAULT CHARSET=utf8").
-			Migrator().CreateTable(&model.User{}); err != nil {
-			return err
-		}
-	}
-	return nil
+	return u.db.Model(&model.User{}).Where("id = ?", uid).Updates(&user).Error
 }
