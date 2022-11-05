@@ -60,10 +60,28 @@ func GetUser(c *gin.Context) {
 }
 
 func ListUser(c *gin.Context) {
-	c.JSON(200, nil)
+	user, err := cmd.CoreV1.User().ListUser(context.TODO())
+	if err != nil {
+		c.JSON(400, gin.H{"status": "erro"})
+		return
+	}
+	c.JSON(200, user)
 }
 
 func UpdateUser(c *gin.Context) {
+	var user types.User
+
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(400, gin.H{"status": "error"})
+		return
+	}
+
+	err := cmd.CoreV1.User().UpdateUser(context.TODO(), &user)
+	if err != nil {
+		c.JSON(400, gin.H{"status": "erro"})
+		return
+	}
+
 	c.JSON(200, nil)
 
 }
