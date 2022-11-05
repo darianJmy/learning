@@ -12,7 +12,7 @@ type UserInterface interface {
 	Delete(context context.Context, uid int64) error
 	Get(context context.Context, uid int64) (*model.User, error)
 	List(ctx context.Context) (*[]model.User, error)
-	Update(ctx context.Context, uid int64, user *model.User) error
+	Update(ctx context.Context, uid int64, updates map[string]interface{}) error
 }
 
 type user struct {
@@ -56,6 +56,6 @@ func (u *user) List(ctx context.Context) (*[]model.User, error) {
 	return &us, nil
 }
 
-func (u *user) Update(ctx context.Context, uid int64, user *model.User) error {
-	return u.db.Model(&model.User{}).Where("id = ?", uid).Updates(&user).Error
+func (u *user) Update(ctx context.Context, uid int64, updates map[string]interface{}) error {
+	return u.db.Model(&model.User{}).Where("id = ?", uid).Updates(updates).Error
 }

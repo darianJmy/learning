@@ -58,3 +58,12 @@ func GetUser(c *gin.Context) {
 	}
 	c.JSON(200, user)
 }
+
+func ListUser(c *gin.Context) {
+	c.JSON(200, nil)
+}
+
+func UpdateUser(c *gin.Context) {
+	c.JSON(200, nil)
+
+}

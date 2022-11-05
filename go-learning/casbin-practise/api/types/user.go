@@ -5,9 +5,10 @@ type UserUri struct {
 }
 
 type User struct {
-	UserName   string `json:"username"`
+	Id         int64  `json:"id"`
+	Name       string `json:"username"`
 	UserNameCn string `json:"username_cn"`
-	NickName   string `json:"nickname"`
+	Nick       string `json:"nickname"`
 	Password   string `json:"password"`
 	Phone      string `json:"phone"`
 	Email      string `json:"email"`
