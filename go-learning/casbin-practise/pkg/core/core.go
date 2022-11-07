@@ -6,6 +6,8 @@ import (
 
 type CoreV1Interface interface {
 	User() UserInterface
+	Role() RoleInterface
+	Menu() MenuInterface
 }
 
 type core struct {
@@ -14,6 +16,14 @@ type core struct {
 
 func (c *core) User() UserInterface {
 	return newUser(c)
+}
+
+func (c *core) Role() RoleInterface {
+	return newRole(c)
+}
+
+func (c *core) Menu() MenuInterface {
+	return newMenu(c)
 }
 
 func New(factory db.ShareDaoFactory) CoreV1Interface {

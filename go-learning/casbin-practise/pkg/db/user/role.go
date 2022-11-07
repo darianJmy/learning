@@ -12,7 +12,7 @@ type RoleInterface interface {
 	Delete(context context.Context, uid int64) error
 	Get(context context.Context, uid int64) (*model.Role, error)
 	List(ctx context.Context) (*[]model.Role, error)
-	Update(ctx context.Context, uid int64, user *model.Role) error
+	Update(ctx context.Context, uid int64, updates map[string]interface{}) error
 }
 
 type role struct {
@@ -56,6 +56,6 @@ func (r *role) List(ctx context.Context) (*[]model.Role, error) {
 	return &rs, nil
 }
 
-func (r *role) Update(ctx context.Context, uid int64, role *model.Role) error {
-	return r.db.Model(&model.Role{}).Where("id = ?", uid).Updates(&role).Error
+func (r *role) Update(ctx context.Context, uid int64, updates map[string]interface{}) error {
+	return r.db.Model(&model.Role{}).Where("id = ?", uid).Updates(updates).Error
 }

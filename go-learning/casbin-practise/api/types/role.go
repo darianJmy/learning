@@ -1,10 +1,10 @@
 package types
 
-type UserUri struct {
+type RoleUri struct {
 	ID int64 `uri:"id" binding:"required"`
 }
 
-type Role struct {
+type User struct {
 	Id         int64  `json:"id"`
 	Name       string `json:"username"`
 	UserNameCn string `json:"username_cn"`
