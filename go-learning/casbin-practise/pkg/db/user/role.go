@@ -1,8 +1,9 @@
 package user
 
 import (
+	"casbin-practise/pkg/db/model"
 	"context"
-	"github.com/darianJmy/learning/go-learning/casbin-practise/pkg/db/model"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"time"
 )
@@ -10,9 +11,9 @@ import (
 type RoleInterface interface {
 	Create(context context.Context, obj *model.Role) (*model.Role, error)
 	Delete(context context.Context, uid int64) error
-	Get(context context.Context, uid int64) (*model.Role, error)
+	Get(context context.Context, rid string) (*model.Role, error)
 	List(ctx context.Context) (*[]model.Role, error)
-	Update(ctx context.Context, uid int64, user *model.Role) error
+	Update(ctx context.Context, rid string, role *model.Role) error
 }
 
 type role struct {
@@ -26,6 +27,7 @@ func NewRole(db *gorm.DB) RoleInterface {
 func (r *role) Create(context context.Context, obj *model.Role) (*model.Role, error) {
 	now := time.Now()
 	obj.CreateTime = now
+	obj.Id = uuid.New().String()
 
 	if err := r.db.Create(obj).Error; err != nil {
 		return nil, err
@@ -40,9 +42,9 @@ func (r *role) Delete(context context.Context, uid int64) error {
 		Delete(&model.Role{}).Error
 }
 
-func (r *role) Get(context context.Context, uid int64) (*model.Role, error) {
+func (r *role) Get(context context.Context, rid string) (*model.Role, error) {
 	var obj model.Role
-	if err := r.db.Where("id = ?", uid).Find(&obj).Error; err != nil {
+	if err := r.db.Where("id = ?", rid).Find(&obj).Error; err != nil {
 		return nil, err
 	}
 	return &obj, nil
@@ -56,6 +58,6 @@ func (r *role) List(ctx context.Context) (*[]model.Role, error) {
 	return &rs, nil
 }
 
-func (r *role) Update(ctx context.Context, uid int64, role *model.Role) error {
-	return r.db.Model(&model.Role{}).Where("id = ?", uid).Updates(&role).Error
+func (r *role) Update(ctx context.Context, rid string, role *model.Role) error {
+	return r.db.Model(&model.Role{}).Where("id = ?", rid).Updates(&role).Error
 }

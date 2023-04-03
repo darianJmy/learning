@@ -1,9 +1,5 @@
 package types
 
-type UserUri struct {
-	UID int64 `uri:"uid" binding:"required"`
-}
-
 type User struct {
 	UserName   string `json:"username"`
 	UserNameCn string `json:"username_cn"`

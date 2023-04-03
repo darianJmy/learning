@@ -2,48 +2,46 @@ package options
 
 import (
 	"fmt"
+	"github.com/emicklei/go-restful/v3"
+
 	pixiuConfig "github.com/caoyingjunz/pixiulib/config"
-	config2 "github.com/darianJmy/learning/go-learning/casbin-practise/app/cmd/config"
-	"github.com/darianJmy/learning/go-learning/casbin-practise/pkg/db"
-	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"os"
+
+	"casbin-practise/cmd/app/config"
+	"casbin-practise/pkg/db"
 )
 
 const (
 	maxIdleConns = 10
 	maxOpenConns = 100
-
-	defaultConfigFile = "/etc/casbin-practise/config.yaml"
 )
 
 type Options struct {
 	ConfigFile      string
-	ComponentConfig config2.Config
-
-	GinEngine *gin.Engine
+	ComponentConfig config.Config
 
 	DB      *gorm.DB
 	Factory db.ShareDaoFactory
+
+	Container *restful.Container
 }
 
-func NewOptions() *Options {
-	return &Options{}
+func NewOptions(configFile string) *Options {
+	return &Options{
+		ConfigFile: configFile,
+	}
+}
+
+func (o *Options) NewContainer(container *restful.Container) *Options {
+	o.Container = container
+	return o
 }
 
 func (o *Options) Complete() error {
-	configFile := o.ConfigFile
-	if len(configFile) == 0 {
-		configFile = os.Getenv("ConfigFile")
-	}
-	if len(configFile) == 0 {
-		configFile = defaultConfigFile
-	}
-
 	// 解析 yaml 文件
 	c := pixiuConfig.New()
-	c.SetConfigFile(configFile)
+	c.SetConfigFile(o.ConfigFile)
 	c.SetConfigType("yaml")
 	if err := c.Binding(&o.ComponentConfig); err != nil {
 		return err
@@ -57,13 +55,7 @@ func (o *Options) Complete() error {
 }
 
 func (o *Options) register() error {
-	if err := o.registerDatabase(); err != nil {
-		return err
-	}
-	if err := o.registerGinEngine(); err != nil {
-		return err
-	}
-	return nil
+	return o.registerDatabase()
 }
 
 func (o *Options) registerDatabase() error {
@@ -91,16 +83,10 @@ func (o *Options) registerDatabase() error {
 
 	o.Factory = db.NewFactory(o.DB)
 
-	return o.CheckTables()
+	return o.checkTables()
 }
 
-func (o *Options) registerGinEngine() error {
-	o.GinEngine = gin.Default()
-	return nil
-
-}
-
-func (o *Options) CheckTables() error {
+func (o *Options) checkTables() error {
 	modelList := db.GetDefaultModelList(o.DB)
 	for _, err := range modelList {
 		if err != nil {
@@ -108,8 +94,4 @@ func (o *Options) CheckTables() error {
 		}
 	}
 	return nil
-}
-
-func (o *Options) Run() {
-	o.GinEngine.Run(fmt.Sprintf(":%d", o.ComponentConfig.Default.Listen))
 }

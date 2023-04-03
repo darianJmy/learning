@@ -6,7 +6,7 @@ import (
 
 // 默认格式
 type Model struct {
-	Id              int64     `json:"id" gorm:"column:id;type:int();primary_key;auto_increment;comment:ID"`
+	Id              string    `json:"id" gorm:"column:id;type:varchar(64);primary_key;auto_increment;comment:ID"`
 	CreateTime      time.Time `json:"create_time" gorm:"column:create_time;type:datetime;default:current_timestamp;comment:创建时间"`
 	UpdateTime      time.Time `json:"update_time" gorm:"column:update_time;type:datetime;default:null on update current_timestamp;comment:修改时间"`
 	ResourceVersion int64     `json:"resource_version" gorm:"column:resource_version;type:int;default:1;comment:资源版本"`

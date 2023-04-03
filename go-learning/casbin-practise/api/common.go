@@ -1,11 +1,16 @@
 package api
 
 import (
-	"github.com/darianJmy/learning/go-learning/casbin-practise/api/server/router/user"
-	"github.com/gin-gonic/gin"
+	"casbin-practise/api/server/middleware"
+	"casbin-practise/api/server/router/role"
+	"github.com/emicklei/go-restful/v3"
+
+	"casbin-practise/api/server/router/user"
 )
 
-func RegistryRoutes(ginEngine *gin.Engine) {
+func RegisterRoutes(wsContainer *restful.Container) {
 
-	user.InitRoutes(ginEngine)
+	wsContainer.Filter(middleware.NCSACommonLogFormatLogger())
+	user.NewRouter(wsContainer)
+	role.NewRouter(wsContainer)
 }

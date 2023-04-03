@@ -1,8 +1,9 @@
 package db
 
 import (
-	"github.com/darianJmy/learning/go-learning/casbin-practise/pkg/db/user"
 	"gorm.io/gorm"
+
+	"casbin-practise/pkg/db/user"
 )
 
 type ShareDaoFactory interface {

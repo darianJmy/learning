@@ -1,11 +1,12 @@
 package core
 
 import (
-	"github.com/darianJmy/learning/go-learning/casbin-practise/pkg/db"
+	"casbin-practise/pkg/db"
 )
 
 type CoreV1Interface interface {
 	User() UserInterface
+	Role() RoleInterface
 }
 
 type core struct {
@@ -14,6 +15,10 @@ type core struct {
 
 func (c *core) User() UserInterface {
 	return newUser(c)
+}
+
+func (c *core) Role() RoleInterface {
+	return newRole(c)
 }
 
 func New(factory db.ShareDaoFactory) CoreV1Interface {

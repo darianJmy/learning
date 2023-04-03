@@ -1,60 +1,63 @@
 package user
 
 import (
+	"casbin-practise/pkg/global"
 	"context"
-	"github.com/darianJmy/learning/go-learning/casbin-practise/api/types"
-	"github.com/darianJmy/learning/go-learning/casbin-practise/app/cmd"
-	"github.com/gin-gonic/gin"
+	"github.com/emicklei/go-restful/v3"
+
+	"casbin-practise/pkg/types"
 )
 
-func Health(c *gin.Context) {
-	c.String(200, "success")
+func (u *userRouter) GetUser(req *restful.Request, resp *restful.Response) {
+	uid := req.PathParameter("user-id")
+	global.Corev1.User().GetUser(context.TODO(), uid)
+
+	resp.WriteHeaderAndJson(200, uid, "application/json")
 }
 
-func CreateUser(c *gin.Context) {
+func (u *userRouter) ListUser(req *restful.Request, resp *restful.Response) {
+	users, err := global.Corev1.User().ListUser(context.TODO())
+	if err != nil {
+		resp.WriteHeaderAndEntity(400, nil)
+		return
+	}
+
+	resp.WriteHeaderAndJson(200, users, "application/json")
+}
+
+func (u *userRouter) CreateUser(req *restful.Request, resp *restful.Response) {
 	var user types.User
 
-	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(400, gin.H{"status": "error"})
+	if err := req.ReadEntity(&user); err != nil {
+		resp.WriteHeaderAndEntity(400, nil)
 		return
 	}
 
-	if err := cmd.CoreV1.User().CreateUser(context.TODO(), &user); err != nil {
-		c.JSON(400, gin.H{"status": "error"})
+	if err := global.Corev1.User().CreateUser(context.TODO(), &user); err != nil {
+		resp.WriteHeaderAndEntity(400, nil)
 		return
 	}
 
-	c.String(200, "success")
+	resp.WriteHeaderAndEntity(200, nil)
 }
 
-func DeleteUser(c *gin.Context) {
-	var uri types.UserUri
-
-	if err := c.ShouldBindUri(&uri); err != nil {
-		c.JSON(400, gin.H{"status": "error"})
+func (u *userRouter) UpdateUser(req *restful.Request, resp *restful.Response) {
+	var user types.User
+	if err := req.ReadEntity(&user); err != nil {
+		resp.WriteHeaderAndEntity(400, nil)
 		return
 	}
 
-	if err := cmd.CoreV1.User().DeleteUser(context.TODO(), uri.UID); err != nil {
-		c.JSON(400, gin.H{"status": "erro"})
-		return
-	}
-
-	c.String(200, "success")
+	uid := req.PathParameter("user-id")
+	global.Corev1.User().UpdateUser(context.TODO(), uid, &user)
 }
 
-func GetUser(c *gin.Context) {
-	var uri types.UserUri
-
-	if err := c.ShouldBindUri(&uri); err != nil {
-		c.JSON(400, gin.H{"status": "error"})
+func (u *userRouter) DeleteUser(req *restful.Request, resp *restful.Response) {
+	uid := req.PathParameter("user-id")
+	if err := global.Corev1.User().DeleteUser(context.TODO(), uid); err != nil {
+		resp.WriteHeaderAndEntity(400, nil)
 		return
 	}
 
-	user, err := cmd.CoreV1.User().GetUser(context.TODO(), uri.UID)
-	if err != nil {
-		c.JSON(400, gin.H{"status": "erro"})
-		return
-	}
-	c.JSON(200, user)
+	resp.WriteHeaderAndEntity(200, nil)
 }

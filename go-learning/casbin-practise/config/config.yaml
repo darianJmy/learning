@@ -1,12 +1,12 @@
 default:
   # 服务监听端口
-  listen: 8083
+  listen: 8080
   log_dir: /Users/jimingyu/learning/go-learning/casbin-practise
 
 # 数据库地址信息
 mysql:
-  host: 127.0.0.1
+  host: 192.168.17.41
   user: root
-  password: root
+  password: Admin@123
   port: 3306
   database: casbin

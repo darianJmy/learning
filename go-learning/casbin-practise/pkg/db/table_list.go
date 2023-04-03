@@ -4,8 +4,9 @@ import (
 	"github.com/casbin/casbin/v2"
 	csmodel "github.com/casbin/casbin/v2/model"
 	gormadapter "github.com/casbin/gorm-adapter/v3"
-	"github.com/darianJmy/learning/go-learning/casbin-practise/pkg/db/model"
 	"gorm.io/gorm"
+
+	"casbin-practise/pkg/db/model"
 )
 
 type tableList []error
