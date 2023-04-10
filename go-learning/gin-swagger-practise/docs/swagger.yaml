@@ -1,0 +1,123 @@
+basePath: /
+definitions:
+  main.user:
+    properties:
+      age:
+        type: integer
+      name:
+        type: string
+    type: object
+host: 127.0.0.1:8080
+info:
+  contact:
+    email: 542255405@qq.com
+    name: JiXingXing
+  description: 统一登陆项目
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://github.com
+  title: 接囗文档
+  version: "1.0"
+paths:
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: 查看用户列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 请求成功
+          schema:
+            items:
+              $ref: '#/definitions/main.user'
+            type: array
+      summary: 查看用户列表
+    post:
+      consumes:
+      - application/json
+      description: 创建用户
+      parameters:
+      - description: 请示参数data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/main.user'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 请求成功
+          schema:
+            $ref: '#/definitions/main.user'
+      summary: 创建用户
+  /user/{name}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除用户
+      parameters:
+      - description: 请示参数data
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 请求成功
+          schema:
+            type: string
+      summary: 删除用户
+    get:
+      consumes:
+      - application/json
+      description: 查看用户详细信息
+      parameters:
+      - description: 用户名称
+        in: path
+        name: name
+        required: true
+        type: string
+      - description: 用户年龄
+        in: query
+        name: age
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 请求成功
+          schema:
+            $ref: '#/definitions/main.user'
+      summary: 查看用户详细信息
+    put:
+      consumes:
+      - application/json
+      description: 更新用户
+      parameters:
+      - description: 用户名称
+        in: path
+        name: name
+        required: true
+        type: string
+      - description: 请示参数data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/main.user'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 请求成功
+          schema:
+            $ref: '#/definitions/main.user'
+      summary: 更新用户
+swagger: "2.0"
